@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: longhorn-bandwidth-operator
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: longhorn-bandwidth-operator
+  template:
+    metadata:
+      labels:
+        app: longhorn-bandwidth-operator
+    spec:
+      containers:
+      - name: longhorn-bandwidth-operator
+        image: harbor.wynndrahorad.com/home-cluster/longhorn-bandwidth-operator
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 3
