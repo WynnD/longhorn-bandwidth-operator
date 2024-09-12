@@ -12,6 +12,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -30,14 +31,20 @@ func main() {
 	logger := log.Log.WithName("longhorn-bandwidth-operator")
 
 	// Load configuration
-	config, err := loadConfig("config.yaml")
+	configPath := os.Getenv("CONFIG_PATH")
+	if configPath == "" {
+		configPath = "config.yaml"
+	}
+	config, err := loadConfig(configPath)
 	if err != nil {
 		logger.Error(err, "Failed to load configuration")
 		os.Exit(1)
 	}
 
 	// Set up manager
-	mgr, err := manager.New(getKubeConfig(), manager.Options{})
+	mgr, err := manager.New(getKubeConfig(), manager.Options{
+		HealthProbeBindAddress: ":8080",
+	})
 	if err != nil {
 		logger.Error(err, "Failed to set up manager")
 		os.Exit(1)
@@ -57,6 +64,20 @@ func main() {
 
 	if err != nil {
 		logger.Error(err, "Failed to create controller")
+		os.Exit(1)
+	}
+
+	// Add health check handler
+	err = mgr.AddHealthzCheck("healthz", healthz.Ping)
+	if err != nil {
+		logger.Error(err, "Unable to set up health check")
+		os.Exit(1)
+	}
+
+	// Add readiness check handler
+	err = mgr.AddReadyzCheck("readyz", healthz.Ping)
+	if err != nil {
+		logger.Error(err, "Unable to set up ready check")
 		os.Exit(1)
 	}
 

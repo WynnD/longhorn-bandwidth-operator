@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-bandwidth-operator-config
+data:
+  config.yaml: |-
+    nodes:
+      pi1:
+        ingress_limit: 30M
+        egress_limit: 15M
+      morningstar:
+        ingress_limit: 50M
+        egress_limit: 25M
+      rocinante:
+        ingress_limit: 50M
+        egress_limit: 25M
+      snowball:
+        ingress_limit: 50M
+        egress_limit: 25M

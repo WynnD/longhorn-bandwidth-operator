@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: longhorn-bandwidth-operator
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: longhorn-bandwidth-operator
@@ -22,6 +22,12 @@ spec:
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 5
+        env:
+        - name: CONFIG_PATH
+          value: /etc/longhorn-bandwidth-operator/config.yaml
+        ports:
+        - containerPort: 8080
+          name: health
         readinessProbe:
           httpGet:
             path: /health
@@ -29,3 +35,17 @@ spec:
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 3
+        volumeMounts:
+        - name: config
+          mountPath: /etc/longhorn-bandwidth-operator
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      - name: config
+        configMap:
+          name: longhorn-bandwidth-operator-config

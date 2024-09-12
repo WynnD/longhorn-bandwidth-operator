@@ -1,0 +1,52 @@
+name: prod
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  WERF_ENF: prod
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    container: ghcr.io/catthehacker/ubuntu:act-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - uses: werf/actions/install@v2
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: harbor.wynndrahorad.com
+          username: robot$gitea-runner
+          password: ${{ secrets.HARBOR_PASS }}
+
+      - name: Build and deploy
+        shell: bash
+        run: | 
+          source "$(werf ci-env github --as-file)"
+          werf build --repo harbor.wynndrahorad.com/longhorn-bandwidth-operator/longhorn-bandwidth-operator
+
+      - name: Send mail
+        if: always()
+        uses: https://github.com/dawidd6/action-send-mail@v3
+        with:
+            to: ${{ secrets.MAIL_TO }}
+            server_address: smtp.gmail.com
+            server_port: 465
+            username: ${{secrets.MAIL_USERNAME}}
+            password: ${{secrets.MAIL_PASSWORD}}
+            from: Gitea <gitea@gitea.wynndrahorad.com>
+            subject: ${{ gitea.repository }} ${{gitea.workflow}} ${{ job.status }}
+            priority: high
+            convert_markdown: true
+            html_body: |
+                ### Build longhorn-bandwidth-operator Job ${{ job.status }}
+
+                ${{ github.repository }}: [${{ github.ref }}@${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/actions)

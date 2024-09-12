@@ -1,0 +1,8 @@
+project: longhorn-bandwidth-operator
+configVersion: 1
+platform:
+  - linux/amd64
+  - linux/arm64
+---
+image: longhorn-bandwidth-operator
+dockerfile: Dockerfile
