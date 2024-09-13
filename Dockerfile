@@ -14,11 +14,11 @@ RUN go mod download
 COPY . .
 
 # Build the Go program
-RUN go build -o app
+# Add CGO_ENABLED=0 and compile for Alpine
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
-FROM alpine:latest
-WORKDIR /
-COPY --from=builder /build/app ./
+FROM scratch
+COPY --from=builder /build/app /app
 
 # Set the entry point for the container
-ENTRYPOINT ["./app"]
+ENTRYPOINT ["/app"]
