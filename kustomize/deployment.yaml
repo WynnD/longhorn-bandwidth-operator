@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: longhorn-bandwidth-operator
-        image: harbor.wynndrahorad.com/home-cluster/longhorn-bandwidth-operator
+        image: harbor.wynndrahorad.com/home-cluster/longhorn-bandwidth-operator:5da445716bb0d12807a106c1eea69088b
         livenessProbe:
           httpGet:
             path: /health
@@ -45,8 +45,6 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
-      imagePullSecrets:
-      - name: harbor
       volumes:
       - name: config
         configMap:
