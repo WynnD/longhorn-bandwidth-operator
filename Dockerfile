@@ -1,24 +1,18 @@
-# Use the official Go image as the base image
-FROM golang:1.22-alpine AS builder
+# Build the application from source
+FROM golang:1.22 AS build-stage
 
-# Set the working directory inside the container
-WORKDIR /build
+WORKDIR /app
 
-# Copy the Go module files
 COPY go.mod go.sum ./
 
-# Download and install the Go dependencies
 RUN go mod download
 
-# Copy the source code into the container
-COPY . .
+COPY *.go ./
 
-# Build the Go program
-# Add CGO_ENABLED=0 and compile for Alpine
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -o app
 
 FROM scratch
-COPY --from=builder /build/app /app
 
-# Set the entry point for the container
+COPY --from=build-stage /app/app /app
+
 ENTRYPOINT ["/app"]

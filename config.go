@@ -1,4 +1,4 @@
-package longhornbandwidthoperator
+package main
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-module longhornbandwidthoperator
+module github.com/WynnD/longhorn-bandwidth-operator
 
 go 1.22.2
 
