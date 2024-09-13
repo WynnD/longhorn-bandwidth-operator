@@ -45,6 +45,8 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
+      imagePullSecrets:
+      - name: harbor
       volumes:
       - name: config
         configMap:
