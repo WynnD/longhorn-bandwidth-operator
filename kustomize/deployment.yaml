@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: longhorn-bandwidth-operator
-        image: harbor.wynndrahorad.com/longhorn-bandwidth-operator/longhorn-bandwidth-operator:828cac40eb075193cd480d512f1503fafd1
+        image: harbor.wynndrahorad.com/longhorn-bandwidth-operator/longhorn-bandwidth-operator
         livenessProbe:
           httpGet:
             path: /health
