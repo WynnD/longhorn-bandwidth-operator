@@ -12,6 +12,7 @@ spec:
       labels:
         app: longhorn-bandwidth-operator
     spec:
+      serviceAccountName: longhorn-bandwidth-operator
       containers:
       - name: longhorn-bandwidth-operator
         image: harbor.wynndrahorad.com/longhorn-bandwidth-operator/longhorn-bandwidth-operator
