@@ -11,6 +11,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -41,9 +42,19 @@ func main() {
 		os.Exit(1)
 	}
 
+	// get namespace from env
+	namespace := os.Getenv("CURRENT_NAMESPACE")
+	if namespace == "" {
+		namespace = "longhorn-system"
+	}
+
 	// Set up manager
 	mgr, err := manager.New(getKubeConfig(), manager.Options{
 		HealthProbeBindAddress: ":8081",
+		Cache: cache.Options{
+			// this nifty line uses namespace variable's value as the key
+			DefaultNamespaces: map[string]cache.Config{(namespace): {}},
+		},
 	})
 	if err != nil {
 		logger.Error(err, "Failed to set up manager")
