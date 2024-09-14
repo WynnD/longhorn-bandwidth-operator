@@ -43,7 +43,7 @@ func main() {
 
 	// Set up manager
 	mgr, err := manager.New(getKubeConfig(), manager.Options{
-		HealthProbeBindAddress: ":8080",
+		HealthProbeBindAddress: ":8081",
 	})
 	if err != nil {
 		logger.Error(err, "Failed to set up manager")

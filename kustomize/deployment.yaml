@@ -18,7 +18,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8081
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 5
@@ -26,12 +26,12 @@ spec:
         - name: CONFIG_PATH
           value: /etc/longhorn-bandwidth-operator/config.yaml
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
           name: health
         readinessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8081
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 3
