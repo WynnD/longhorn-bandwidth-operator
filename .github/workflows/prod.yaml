@@ -40,8 +40,8 @@ jobs:
             to: ${{ secrets.MAIL_TO }}
             server_address: smtp.gmail.com
             server_port: 465
-            username: ${{secrets.MAIL_USERNAME}}
-            password: ${{secrets.MAIL_PASSWORD}}
+            username: ${{secrets.EMAIL_USERNAME}}
+            password: ${{secrets.EMAIL_PASSWORD}}
             from: Gitea <gitea@gitea.wynndrahorad.com>
             subject: ${{ gitea.repository }} ${{gitea.workflow}} ${{ job.status }}
             priority: high
